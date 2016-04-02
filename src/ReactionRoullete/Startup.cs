@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ReactionRoullete.Models;
 using ReactionRoullete.Services;
+using Microsoft.ProjectOxford.Emotion;
 
 namespace ReactionRoullete
 {
@@ -59,6 +60,12 @@ namespace ReactionRoullete
 
 
             services.AddTransient<YoutubeService>();
+
+            services.AddTransient<EmotionServiceClient>((serviceProvider) =>
+            {
+                return new EmotionServiceClient("ac2feba2587948878912ff54871123d8");
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
