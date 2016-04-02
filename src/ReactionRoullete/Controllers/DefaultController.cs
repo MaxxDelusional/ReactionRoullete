@@ -22,17 +22,16 @@ namespace ReactionRoullete.Controllers
         private readonly ApplicationDbContext db;
         private readonly EmotionServiceClient emotionService;
         private readonly IHostingEnvironment hostingEnvironment;
+        private readonly AzureStorageService _StorageService;
 
 
-        public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment)
+        public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment, AzureStorageService storageService)
         {
-   
-
             this.youtubeService = youtubeService;
             this.db = db;
             this.emotionService = emotionService;
             this.hostingEnvironment = hostingEnvironment;
-
+            this._StorageService = storageService;
         }
 
 
@@ -128,8 +127,14 @@ namespace ReactionRoullete.Controllers
 
             p.WaitForExit();
 
+            if (!System.IO.File.Exists(absolutemp4path))
+            {
+                throw new System.IO.FileNotFoundException("MP4 file was not generated");
+            }
 
-            return "http://reactionroullete.azurewebsites.net/testData/WIN_20160402_00_37_01_Pro.mp4";
+            var storageuri = await _StorageService.PutPreflightFileAsync(absolutemp4path);
+
+            return storageuri.ToString();
 
           //  return Url.Content(relativemp4path);
 

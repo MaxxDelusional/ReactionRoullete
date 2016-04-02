@@ -58,6 +58,7 @@ namespace ReactionRoullete
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
+            services.AddTransient<AzureStorageService>();
 
             services.AddTransient<YoutubeService>();
 
