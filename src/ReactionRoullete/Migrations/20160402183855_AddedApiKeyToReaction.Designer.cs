@@ -8,9 +8,10 @@ using ReactionRoullete.Models;
 namespace ReactionRoullete.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20160402183855_AddedApiKeyToReaction")]
+    partial class AddedApiKeyToReaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")

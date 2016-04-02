@@ -63,6 +63,13 @@ record.onclick = function () {
         audio: false,
         video: true
     }, function (stream) {
+
+        if (youtubePlayer) {
+
+            playVideo();
+        }
+
+
         //preview.src = window.URL.createObjectURL(stream);
         //preview.play();
 
@@ -97,6 +104,14 @@ record.onclick = function () {
 
 var fileName;
 stop.onclick = function () {
+
+
+    if (youtubePlayer) {
+
+        stopVideo();
+    }
+
+
     record.disabled = false;
     stop.disabled = true;
 
