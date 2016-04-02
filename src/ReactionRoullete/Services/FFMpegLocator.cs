@@ -8,7 +8,7 @@ namespace ReactionRoullete.Services
 {
     public class FFMpegLocator
     {
-        const string LocalLocation = @"C:\git\ReactionRoullete\src\ReactionRoullete\ffmpeg.exe";
+        const string LocalLocation = @"C:\git\ReactionRoullete\ffmpeg.exe";
         const string AzureLocation = @"D:\home\site\ffmpeg.exe";
 
         public string GetFFMpegPath()
