@@ -28,12 +28,8 @@ namespace ReactionRoullete.Services
                 var result = await httpClient.PostAsync("https://api.projectoxford.ai/emotion/v1.0/recognize", body);
 
                 if (result.IsSuccessStatusCode)
-                {
-
-
+                { 
                     string response = await result.Content.ReadAsStringAsync();
-
-
                 }
                 else
                 {

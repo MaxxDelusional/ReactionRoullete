@@ -42,10 +42,10 @@
 
     <tr>
 
-        <th>Neutral</th>
-        <th>Happiness</th>
-        <th>Surprise</th>
-        <th>Sadness</th>
+        <th>Anger</th>
+        <th>Disgust</th>
+        <th>Fear</th>
+        <th>Contempt</th>
 
     </tr>
     <tr>
@@ -125,16 +125,16 @@
         function displayResults(results) {
 
 
+            console.log(results);
 
-
-            $('#outputNeutral').Text(results.neutral);
-            $('#outputHappiness').Text(results.happiness);
-            $('#outputSurprise').Text(results.surprise);
-            $('#outputSadness').Text(results.sadness);
-            $('#outputAnger').Text(results.anger);
-            $('#outputDisgust').Text(results.disgust);
-            $('#outputFear').Text(results.fear);
-            $('#outputContempt').Text(results.contempt);
+            $('#outputNeutral').text(results.neutral);
+            $('#outputHappiness').text(results.happiness);
+            $('#outputSurprise').text(results.surprise);
+            $('#outputSadness').text(results.sadness);
+            $('#outputAnger').text(results.anger);
+            $('#outputDisgust').text(results.disgust);
+            $('#outputFear').text(results.fear);
+            $('#outputContempt').text(results.contempt);
 
 
         }

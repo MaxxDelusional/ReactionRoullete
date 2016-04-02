@@ -19,7 +19,7 @@ function PostBlob(blob, fileType, fileName) {
     //container.appendChild(progress);
 
     // POST the Blob using XHR2
-    xhr(callbackurl, formData, null, null, function (fName) {
+    xhr(callbackurl, formData, null, null, function (response) {
         //container.appendChild(document.createElement('hr'));
         //var mediaElement = document.createElement(fileType);
 
@@ -38,6 +38,16 @@ function PostBlob(blob, fileType, fileName) {
         //progress.parentNode.removeChild(progress);
         //strong.parentNode.removeChild(strong);
         //hr.parentNode.removeChild(hr);
+
+       
+        var parsedResponse = JSON.parse(response);
+
+
+        if (parsedResponse.success) {
+            window.location = parsedResponse.redirectUrl;
+        }
+
+
     });
 }
 
@@ -171,12 +181,19 @@ function xhr(url, data, progress, percentage, callback) {
 
     request.open('POST', url);
     request.send(data);
+
+
+
+
 }
 
 window.onbeforeunload = function () {
     if (!!fileName) {
         //deleteAudioVideoFiles();
-        return 'It seems that you\'ve not deleted audio/video files from the server.';
+
+
+
+        //return 'It seems that you\'ve not deleted audio/video files from the server.';
     }
 };
 
