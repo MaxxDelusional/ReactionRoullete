@@ -67,7 +67,7 @@ namespace ReactionRoullete.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> React([FromQuery]long youtubeVideoDescriptionID, IFormFile recordedVideo)
+        public async Task<IActionResult> React(long youtubeVideoDescriptionID, IFormFile recordedVideo)
         {
             if (null == recordedVideo && Request.Form.Files.Count > 0)
                 recordedVideo = Request.Form.Files[0];
@@ -116,7 +116,7 @@ namespace ReactionRoullete.Controllers
             await videoFile.SaveAsAsync(hostingEnvironment.MapPath(relativewebmpath));
 
             //Transcode here
-            string ffmpegexe = @"C:\git\ReactionRoullete\src\ReactionRoullete\ffmpeg.exe";
+            string ffmpegexe = @"C:\git\ReactionRoullete\ffmpeg.exe";
 
             string ffmpegarguments = $"-i {absolutewebmpath} {absolutemp4path}";
 
