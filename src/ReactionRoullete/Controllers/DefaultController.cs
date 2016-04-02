@@ -302,7 +302,7 @@ namespace ReactionRoullete.Controllers
 
                     var window = windowstringbuilder.ToString();
 
-
+                    reaction.SerializedTimeString = window;
                     reaction.DateProcessed = DateTimeOffset.Now;
 
                     await db.SaveChangesAsync();
