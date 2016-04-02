@@ -60,6 +60,8 @@ namespace ReactionRoullete
 
             services.AddTransient<AzureStorageService>();
 
+            services.AddSingleton<FFMpegLocator>();
+
             services.AddTransient<YoutubeService>();
 
             services.AddTransient<EmotionServiceClient>((serviceProvider) =>
