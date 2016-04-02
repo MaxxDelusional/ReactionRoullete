@@ -99,8 +99,8 @@ record.onclick = function () {
         audio: false,
         video: true
     }, function (stream) {
-        preview.src = window.URL.createObjectURL(stream);
-        preview.play();
+        //preview.src = window.URL.createObjectURL(stream);
+        //preview.play();
 
         // var legalBufferValues = [256, 512, 1024, 2048, 4096, 8192, 16384];
         // sample-rates in at least the range 22050 to 96000.
@@ -136,7 +136,7 @@ stop.onclick = function () {
     record.disabled = false;
     stop.disabled = true;
 
-    preview.src = '';
+    //preview.src = '';
 
     fileName = Math.round(Math.random() * 99999999) + 99999999;
 
