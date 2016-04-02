@@ -95,6 +95,7 @@ namespace ReactionRoullete.Controllers
             reaction.DateCreated = DateTimeOffset.Now;
             reaction.YoutubeVideoDescriptionID = youtubeVideoDescriptionID;
             reaction.OperationUrl = recognizeResult.Url;
+            reaction.ApiKey = recognizeResult.ApiKey;
             db.Reactions.Add(reaction);
             await db.SaveChangesAsync();
 
@@ -157,7 +158,11 @@ namespace ReactionRoullete.Controllers
         {
             Reaction reaction = await db.Reactions.FirstOrDefaultAsync(x => x.ID == reactionID);
 
-            var operationResult = await emotionService.GetOperationResultAsync(reaction.OperationUrl);
+            if (string.IsNullOrEmpty(reaction.ApiKey))
+                reaction.ApiKey = "a728c60e913a44aeb33b659cb91e057e";
+
+
+            var operationResult = await emotionService.GetOperationResultAsync(reaction.OperationUrl, reaction.ApiKey);
 
             if (operationResult.Status == "Succeeded")
             {

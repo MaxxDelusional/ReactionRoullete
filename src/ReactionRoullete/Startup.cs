@@ -61,14 +61,11 @@ namespace ReactionRoullete
             services.AddTransient<AzureStorageService>();
 
             services.AddSingleton<FFMpegLocator>();
+            services.AddSingleton<EmotionServiceApiKeyProvider>();
 
             services.AddTransient<YoutubeService>();
 
-            services.AddTransient<EmotionServiceClient>((serviceProvider) =>
-            {
-                return new EmotionServiceClient("a728c60e913a44aeb33b659cb91e057e");
-
-            });
+            services.AddTransient<EmotionServiceClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
