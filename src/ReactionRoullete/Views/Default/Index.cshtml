@@ -7,13 +7,13 @@
 <h2>Choose a video</h2>
 
 <div class="row">
-    @foreach (var youtuubeVideoDescription in Model)
+    @foreach (var youtubeVideoDescription in Model)
     {
 
 
         <div class="col-xs-6 col-md-3">
-            <a asp-action="React" asp-controller="Default" asp-route-youtubeVideoDescriptionID="@youtuubeVideoDescription.ID" class="thumbnail">
-                <img src="@youtuubeVideoDescription.Thumbnail" />
+            <a asp-action="React Now!" asp-controller="Default" asp-route-youtubeVideoDescriptionID="@youtubeVideoDescription.ID" class="thumbnail">
+                <img src="@youtubeVideoDescription.Thumbnail" title="This shoudl be a video" />
             </a>
         </div>
 

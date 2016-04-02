@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using ReactionRoullete.Services;
 using ReactionRoullete.Models;
+using Microsoft.Data.Entity;
 
 namespace ReactionRoullete.Controllers
 {
@@ -46,11 +47,11 @@ namespace ReactionRoullete.Controllers
             return View();
         }
 
-        public IActionResult React(long youtubeVideoDescriptionID)
+        public async Task<IActionResult> React(long youtubeVideoDescriptionID)
         {
+            var videoDescription = await db.YoutubeVideoDescriptions.FirstOrDefaultAsync(x => x.ID == youtubeVideoDescriptionID);
 
-
-            return View();
+            return View(videoDescription);
         }
 
         public IActionResult Error()
