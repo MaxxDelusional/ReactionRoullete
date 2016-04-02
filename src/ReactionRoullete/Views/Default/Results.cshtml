@@ -6,16 +6,51 @@
 
 <h2>Results</h2>
 
+<h3>We are now processing your reaction! This can take a while depending on the length of your video. Please leave your browser window open until your results are displayed.</h3>
+
+
 <div class="row">
 
-    <p>I will show some cool data here once I have been implemented</p>
+    <div class="col-xs-6">
+        <h4>Operation Url</h4>
+        <p>@ViewBag.OperationUrl</p>
+    </div>
+    <div class="col-xs-6">
+        <table width="100%">
+            <tr>
 
-    <h4>Operation Url</h4>
-    <p>@ViewBag.OperationUrl</p>
+                <th>Neutral</th>
+                <th>Happiness</th>
+                <th>Surprise</th>
+                <th>Sadness</th>
+
+            </tr>
+            <tr>
+                <td id="outputNeutral"></td>
+                <td id="outputHappiness"></td>
+                <td id="outputSurprise"></td>
+                <td id="outputSadness"></td>
+            </tr>
 
 
+            <tr>
+
+                <th>Anger</th>
+                <th>Disgust</th>
+                <th>Fear</th>
+                <th>Contempt</th>
+
+            </tr>
+            <tr>
+                <td id="outputAnger"></td>
+                <td id="outputDisgust"></td>
+                <td id="outputFear"></td>
+                <td id="outputContempt"></td>
+            </tr>
 
 
+        </table>
+    </div>
 
 </div>
 
@@ -23,43 +58,10 @@
 
 
 
-<table width="100%">
-    <tr>
 
-        <th>Neutral</th>
-        <th>Happiness</th>
-        <th>Surprise</th>
-        <th>Sadness</th>
-
-    </tr>
-    <tr>
-        <td id="outputNeutral"></td>
-        <td id="outputHappiness"></td>
-        <td id="outputSurprise"></td>
-        <td id="outputSadness"></td>
-    </tr>
-
-
-    <tr>
-
-        <th>Anger</th>
-        <th>Disgust</th>
-        <th>Fear</th>
-        <th>Contempt</th>
-
-    </tr>
-    <tr>
-        <td id="outputAnger"></td>
-        <td id="outputDisgust"></td>
-        <td id="outputFear"></td>
-        <td id="outputContempt"></td>
-    </tr>
-
-
-</table>
 
 @section scripts
-{
+    {
 
     <script>
 

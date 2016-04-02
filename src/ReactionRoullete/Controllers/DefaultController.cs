@@ -166,6 +166,10 @@ namespace ReactionRoullete.Controllers
             if (string.IsNullOrEmpty(reaction.ApiKey))
                 reaction.ApiKey = "a728c60e913a44aeb33b659cb91e057e";
 
+            if (reaction.DateProcessed.HasValue)
+            {
+                return reaction;
+            }
 
             var operationResult = await emotionService.GetOperationResultAsync(reaction.OperationUrl, reaction.ApiKey);
 
