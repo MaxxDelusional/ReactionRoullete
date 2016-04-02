@@ -32,3 +32,30 @@ textarea {
         z-index: 10 !important;
     }
 }
+
+body { background-color:#fff; }
+
+
+.navbar-inverse {
+
+    background-color:#1e4700;
+    min-height:110px;
+}
+
+.navbar-inverse .navbar-nav > li > a { 
+    color:#ffd800;
+    font-size:36px;
+    line-height:80px;
+}
+
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-brand {
+      color:#ffd800;
+}
+
+
+.btn-primary {
+
+    background-color:#1e4700;
+    border-color:black;
+     color:#ffd800;
+}
