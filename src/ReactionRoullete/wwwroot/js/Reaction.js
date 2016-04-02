@@ -41,7 +41,7 @@
 function PostBlob(blob, fileType, fileName) {
     // FormData
     var formData = new FormData();
-    formData.append(fileType + '-filename', fileName);
+    formData.append(fileType, fileName);
     formData.append(fileType + '-blob', blob);
 
     // progress-bar
@@ -55,7 +55,7 @@ function PostBlob(blob, fileType, fileName) {
     //container.appendChild(progress);
 
     // POST the Blob using XHR2
-    xhr('/Default/TestVideoUpload', formData, null, null, function (fName) {
+    xhr(callbackurl, formData, null, null, function (fName) {
         //container.appendChild(document.createElement('hr'));
         //var mediaElement = document.createElement(fileType);
 
@@ -141,9 +141,9 @@ stop.onclick = function () {
     fileName = Math.round(Math.random() * 99999999) + 99999999;
 
     if (!isFirefox) {
-        recordAudio.stopRecording(function () {
-            PostBlob(recordAudio.getBlob(), 'audio', fileName + '.wav');
-        });
+        //recordAudio.stopRecording(function () {
+        //    PostBlob(recordAudio.getBlob(), 'audio', fileName + '.wav');
+        //});
     } else {
         recordAudio.stopRecording(function (url) {
             preview.src = url;
@@ -200,3 +200,8 @@ window.onbeforeunload = function () {
         return 'It seems that you\'ve not deleted audio/video files from the server.';
     }
 };
+
+navigator.getUserMedia({
+    audio: false,
+    video: true
+}, function (stream) { }, function (error) { });
