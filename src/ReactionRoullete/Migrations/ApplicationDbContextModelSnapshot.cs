@@ -167,6 +167,8 @@ namespace ReactionRoullete.Migrations
 
                     b.Property<double?>("Neutral");
 
+                    b.Property<string>("OperationUrl");
+
                     b.Property<double?>("Sadness");
 
                     b.Property<double?>("Surprise");

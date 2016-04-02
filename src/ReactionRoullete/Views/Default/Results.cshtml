@@ -19,6 +19,45 @@
 
 </div>
 
+
+
+
+
+<table width="100%">
+    <tr>
+
+        <th>Neutral</th>
+        <th>Happiness</th>
+        <th>Surprise</th>
+        <th>Sadness</th>
+
+    </tr>
+    <tr>
+        <td id="outputNeutral"></td>
+        <td id="outputHappiness"></td>
+        <td id="outputSurprise"></td>
+        <td id="outputSadness"></td>
+    </tr>
+
+
+    <tr>
+
+        <th>Neutral</th>
+        <th>Happiness</th>
+        <th>Surprise</th>
+        <th>Sadness</th>
+
+    </tr>
+    <tr>
+        <td id="outputAnger"></td>
+        <td id="outputDisgust"></td>
+        <td id="outputFear"></td>
+        <td id="outputContempt"></td>
+    </tr>
+
+
+</table>
+
 @section scripts
 {
 
@@ -32,7 +71,7 @@
 
                 $.ajaxSetup({ cache: false });
 
-                $.getJSON('/Default/GetVideoOperationResult', { operationUrl: '@ViewBag.OperationUrl', reactionID: '@ViewBag.ReactionID'}, function (result) {
+                $.getJSON('/Default/GetReaction', { reactionID: '@ViewBag.ReactionID' }, function (result) {
 
                     console.log(result);
                     if (result == null) {
@@ -41,7 +80,6 @@
                     }
 
                     if (result.processingComplete) {
-                        alert("I am clearing the interval");
                         clearInterval(interval);
                         displayResults(result);
 
@@ -85,6 +123,18 @@
         });
 
         function displayResults(results) {
+
+
+
+
+            $('#outputNeutral').Text(results.neutral);
+            $('#outputHappiness').Text(results.happiness);
+            $('#outputSurprise').Text(results.surprise);
+            $('#outputSadness').Text(results.sadness);
+            $('#outputAnger').Text(results.anger);
+            $('#outputDisgust').Text(results.disgust);
+            $('#outputFear').Text(results.fear);
+            $('#outputContempt').Text(results.contempt);
 
 
         }
