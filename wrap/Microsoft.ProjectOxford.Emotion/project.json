@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "dnx451": {
+      "bin": {
+        "assembly": "../../lib/dnx451/Microsoft.ProjectOxford.Emotion.dll"
+      },
+      "dependencies": {
+        "Microsoft.ProjectOxford.Common": "1.0.0-*"
+      }
+    }
+  }
+}

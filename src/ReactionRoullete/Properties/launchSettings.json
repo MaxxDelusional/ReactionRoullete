@@ -10,7 +10,8 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchUrl": "testData/WIN_20160402_00_37_01_Pro.mp4",
+      "launchBrowser": true,
+      "launchUrl": "Default/Test",
       "environmentVariables": {
         "Hosting:Environment": "Development"
       }
