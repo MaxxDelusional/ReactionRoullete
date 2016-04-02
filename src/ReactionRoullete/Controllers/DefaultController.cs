@@ -91,11 +91,6 @@ namespace ReactionRoullete.Controllers
 
             }
 
-
-
-
-            recognizeResult = await emotionService.RecognizeInVideoAsync(url);
-
             Reaction reaction = new Reaction();
             reaction.DateCreated = DateTimeOffset.Now;
             reaction.YoutubeVideoDescriptionID = youtubeVideoDescriptionID;
@@ -103,7 +98,7 @@ namespace ReactionRoullete.Controllers
             db.Reactions.Add(reaction);
             await db.SaveChangesAsync();
 
-            return RedirectToAction("Results", "Default", new { reactionID = reaction.ID });
+            return RedirectToAction("Results", "Default", new { youtubeVideoDescriptionID = youtubeVideoDescriptionID, reactionID = reaction.ID });
         }
 
         private async Task<string> PersistVideoFile(IFormFile videoFile)

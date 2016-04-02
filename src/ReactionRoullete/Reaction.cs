@@ -26,6 +26,9 @@ namespace ReactionRoullete.Models
         [JsonProperty("operationUrl")]
         public string OperationUrl { get; set; }
 
+        [JsonProperty("apiKey")]
+        public string ApiKey { get; set; }
+
         [NotMapped]
         [JsonProperty("processingComplete")]
         public bool ProcessingComplete { get { return this.DateProcessed.HasValue; } }
