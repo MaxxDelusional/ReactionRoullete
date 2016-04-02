@@ -13,6 +13,14 @@
         <img src="@Model.Thumbnail" />
     </div>
 
-
+    <button class="btn btn-danger" id="React">React</button>
+    <button class="btn" id="Stop">Stop Recording</button>
 
 </div>
+
+
+@section scripts {
+    <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"> </script>
+    <script src="~/lib/webrtc-adapter.js/adapter.js"></script>
+    <script src="~/js/Reaction.js"></script>    
+}
