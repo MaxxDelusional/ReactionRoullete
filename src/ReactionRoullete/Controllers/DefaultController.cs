@@ -99,7 +99,12 @@ namespace ReactionRoullete.Controllers
             db.Reactions.Add(reaction);
             await db.SaveChangesAsync();
 
-            return RedirectToAction("Results", "Default", new { youtubeVideoDescriptionID = youtubeVideoDescriptionID, reactionID = reaction.ID });
+
+            return Json(new {
+                success = true,
+                redirectUrl = Url.Action("Results", "Default", new { youtubeVideoDescriptionID = youtubeVideoDescriptionID, reactionID = reaction.ID })
+            });
+       //     return RedirectToAction("Results", "Default", new { youtubeVideoDescriptionID = youtubeVideoDescriptionID, reactionID = reaction.ID });
         }
 
         private async Task<string> PersistVideoFile(IFormFile videoFile)
