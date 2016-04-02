@@ -100,11 +100,12 @@ namespace ReactionRoullete.Controllers
             await db.SaveChangesAsync();
 
 
-            return Json(new {
+            return Json(new
+            {
                 success = true,
                 redirectUrl = Url.Action("Results", "Default", new { youtubeVideoDescriptionID = youtubeVideoDescriptionID, reactionID = reaction.ID })
             });
-       //     return RedirectToAction("Results", "Default", new { youtubeVideoDescriptionID = youtubeVideoDescriptionID, reactionID = reaction.ID });
+            //     return RedirectToAction("Results", "Default", new { youtubeVideoDescriptionID = youtubeVideoDescriptionID, reactionID = reaction.ID });
         }
 
         private async Task<string> PersistVideoFile(IFormFile videoFile)
@@ -186,33 +187,41 @@ namespace ReactionRoullete.Controllers
 
                 foreach (var fragment in pr.Fragments)
                 {
+                    if (null == fragment)
+                        continue;
 
-                    foreach (var ev in fragment.Events)
-                    {
-                        foreach (var subEvent in ev)
+                    if (null != fragment.Events)
+                        foreach (var ev in fragment.Events)
                         {
+                            if (null == ev)
+                                continue;
 
-                            distributionAggregator.Anger += subEvent.WindowFaceDistribution.Anger;
-                            distributionAggregator.Contempt += subEvent.WindowFaceDistribution.Contempt;
-                            distributionAggregator.Disgust += subEvent.WindowFaceDistribution.Disgust;
-                            distributionAggregator.Fear += subEvent.WindowFaceDistribution.Fear;
-                            distributionAggregator.Happiness += subEvent.WindowFaceDistribution.Happiness;
-                            distributionAggregator.Sadness += subEvent.WindowFaceDistribution.Sadness;
-                            distributionAggregator.Surprise += subEvent.WindowFaceDistribution.Surprise;
+                            foreach (var subEvent in ev)
+                            {
+                                if (null == subEvent)
+                                    continue;
 
-
-                            meanAggregator.Anger += subEvent.WindowMeanScores.Anger;
-                            meanAggregator.Contempt += subEvent.WindowMeanScores.Contempt;
-                            meanAggregator.Disgust += subEvent.WindowMeanScores.Disgust;
-                            meanAggregator.Fear += subEvent.WindowMeanScores.Fear;
-                            meanAggregator.Happiness += subEvent.WindowMeanScores.Happiness;
-                            meanAggregator.Sadness += subEvent.WindowMeanScores.Sadness;
-                            meanAggregator.Surprise += subEvent.WindowMeanScores.Surprise;
+                                distributionAggregator.Anger += subEvent.WindowFaceDistribution.Anger;
+                                distributionAggregator.Contempt += subEvent.WindowFaceDistribution.Contempt;
+                                distributionAggregator.Disgust += subEvent.WindowFaceDistribution.Disgust;
+                                distributionAggregator.Fear += subEvent.WindowFaceDistribution.Fear;
+                                distributionAggregator.Happiness += subEvent.WindowFaceDistribution.Happiness;
+                                distributionAggregator.Sadness += subEvent.WindowFaceDistribution.Sadness;
+                                distributionAggregator.Surprise += subEvent.WindowFaceDistribution.Surprise;
 
 
-                            totalNumberOfEvents++;
+                                meanAggregator.Anger += subEvent.WindowMeanScores.Anger;
+                                meanAggregator.Contempt += subEvent.WindowMeanScores.Contempt;
+                                meanAggregator.Disgust += subEvent.WindowMeanScores.Disgust;
+                                meanAggregator.Fear += subEvent.WindowMeanScores.Fear;
+                                meanAggregator.Happiness += subEvent.WindowMeanScores.Happiness;
+                                meanAggregator.Sadness += subEvent.WindowMeanScores.Sadness;
+                                meanAggregator.Surprise += subEvent.WindowMeanScores.Surprise;
+
+
+                                totalNumberOfEvents++;
+                            }
                         }
-                    }
                 }
 
 
@@ -244,12 +253,10 @@ namespace ReactionRoullete.Controllers
 
 
                 reaction.DateProcessed = DateTimeOffset.Now;
+
                 await db.SaveChangesAsync();
 
-
                 //   Reaction reaction = new Reaction();
-
-
             }
             if (operationResult.Status == "Failed")
             {
@@ -261,10 +268,11 @@ namespace ReactionRoullete.Controllers
 
 
 
-        public async Task<IActionResult> Test()
+        public async Task<Reaction> Test()
         {
-            var result = await emotionService.RecognizeInVideoAsync("https://reactionroulette.blob.core.windows.net/preflight/b2300c12-6637-4d1c-9a75-de7e0be3004d.mp4");
-            return View();
+            //var result = await emotionService.RecognizeInVideoAsync("https://reactionroulette.blob.core.windows.net/preflight/b2300c12-6637-4d1c-9a75-de7e0be3004d.mp4");
+            return await GetReaction(38);
+
         }
 
 
