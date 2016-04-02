@@ -23,9 +23,10 @@ namespace ReactionRoullete.Controllers
         private readonly EmotionServiceClient emotionService;
         private readonly IHostingEnvironment hostingEnvironment;
         private readonly AzureStorageService _StorageService;
+        private readonly FFMpegLocator _FFMpegLocator;
 
 
-        public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment, AzureStorageService storageService)
+        public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment, AzureStorageService storageService, FFMpegLocator ffmpegLocator)
         {
 
             this.youtubeService = youtubeService;
@@ -33,6 +34,7 @@ namespace ReactionRoullete.Controllers
             this.emotionService = emotionService;
             this.hostingEnvironment = hostingEnvironment;
             this._StorageService = storageService;
+            this._FFMpegLocator = ffmpegLocator;
         }
 
 
@@ -115,8 +117,12 @@ namespace ReactionRoullete.Controllers
 
             await videoFile.SaveAsAsync(hostingEnvironment.MapPath(relativewebmpath));
 
-            //Transcode here
-            string ffmpegexe = @"C:\git\ReactionRoullete\ffmpeg.exe";
+
+            string ffmpegexe = _FFMpegLocator.GetFFMpegPath();
+
+            if (string.IsNullOrEmpty(ffmpegexe))
+                throw new NotSupportedException("FFMpeg was not found and can not be used.");
+
 
             string ffmpegarguments = $"-i {absolutewebmpath} {absolutemp4path}";
 
@@ -125,11 +131,13 @@ namespace ReactionRoullete.Controllers
             p.WaitForExit();
 
             if (!System.IO.File.Exists(absolutemp4path))
-            {
                 throw new System.IO.FileNotFoundException("MP4 file was not generated");
-            }
+
+            System.IO.File.Delete(absolutewebmpath);
 
             var storageuri = await _StorageService.PutPreflightFileAsync(absolutemp4path);
+
+            System.IO.File.Delete(absolutemp4path);
 
             return storageuri.ToString();
 
