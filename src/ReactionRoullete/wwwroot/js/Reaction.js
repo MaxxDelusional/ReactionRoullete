@@ -117,7 +117,6 @@ stop.onclick = function () {
 
 
     if (youtubePlayer) {
-        alert("Stopping Playback - stop.onlcick");
         stopVideo();
     }
 
