@@ -252,8 +252,9 @@ namespace ReactionRoullete.Controllers
 
 
 
-        public IActionResult Test()
+        public async Task<IActionResult> Test()
         {
+            var result = await emotionService.RecognizeInVideoAsync("https://reactionroulette.blob.core.windows.net/preflight/b2300c12-6637-4d1c-9a75-de7e0be3004d.mp4");
             return View();
         }
 
