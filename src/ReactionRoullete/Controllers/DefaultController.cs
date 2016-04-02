@@ -6,10 +6,9 @@ using Microsoft.AspNet.Mvc;
 using ReactionRoullete.Services;
 using ReactionRoullete.Models;
 using Microsoft.Data.Entity;
-using Microsoft.ProjectOxford.Emotion;
-using Microsoft.ProjectOxford.Emotion.Contract;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Hosting;
+using System.Diagnostics;
 
 namespace ReactionRoullete.Controllers
 {
@@ -20,23 +19,19 @@ namespace ReactionRoullete.Controllers
         private readonly EmotionServiceClient emotionService;
         private readonly IHostingEnvironment hostingEnvironment;
 
-<<<<<<< HEAD
+
         public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment)
-=======
-        public IActionResult TestVideoUpload(IFormFile file)
-        {
-            return Content("Hello World");
-        }
-        public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService)
->>>>>>> 91d3cdbf952f60cf66936d888abeb40a38b95950
         {
             this.youtubeService = youtubeService;
             this.db = db;
             this.emotionService = emotionService;
             this.hostingEnvironment = hostingEnvironment;
-   
+
         }
-        public async Task< IActionResult> Index()
+
+
+
+        public IActionResult Index()
         {
             //var videos = from x in await youtubeService.GetYoutubeVideoDescriptions()
             //             select x;
@@ -71,34 +66,46 @@ namespace ReactionRoullete.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> React(long youtubeVideoDescriptionID, IFormFile recordedVideo)
+        public async Task<IActionResult> React([FromQuery]long youtubeVideoDescriptionID, IFormFile recordedVideo)
         {
+            if (null == recordedVideo && Request.Form.Files.Count > 0)
+                recordedVideo = Request.Form.Files[0];
+
+
+
             var videoDescription = await db.YoutubeVideoDescriptions.FirstOrDefaultAsync(x => x.ID == youtubeVideoDescriptionID);
 
-           string url = await  PersistVideoFile(recordedVideo);
-  
+            string url = await PersistVideoFile(recordedVideo);
+
             VideoEmotionRecognitionOperation recognizeResult = null;
 
-<<<<<<< HEAD
-            try
-            {
-=======
-            
->>>>>>> 91d3cdbf952f60cf66936d888abeb40a38b95950
-                recognizeResult = await emotionService.RecognizeInVideoAsync(url);
+            recognizeResult = await emotionService.RecognizeInVideoAsync(url);
 
             return RedirectToAction("Results", "Default", new { operationUrl = recognizeResult.Url });
         }
 
         private async Task<string> PersistVideoFile(IFormFile videoFile)
         {
+            var videoguid = Guid.NewGuid();
+            string relativewebmpath = $"uploads/videos/{videoguid.ToString()}.webm";
+            string relativemp4path = $"uploads/videos/{videoguid.ToString()}.mp4";
 
-            string relativePath = "uploads/videos/" + Guid.NewGuid().ToString() + ".mp4";
-            await videoFile.SaveAsAsync(hostingEnvironment.MapPath(relativePath));
+            var absolutewebmpath = hostingEnvironment.MapPath(relativewebmpath);
+            var absolutemp4path = hostingEnvironment.MapPath(relativemp4path);
 
+            await videoFile.SaveAsAsync(hostingEnvironment.MapPath(relativewebmpath));
 
-            return Url.Content(relativePath);
-          //  return "http://reactionroullete.azurewebsites.net/testData/WIN_20160402_00_37_01_Pro.mp4";
+            //Transcode here
+            string ffmpegexe = @"C:\git\ReactionRoullete\src\ReactionRoullete\ffmpeg.exe";
+
+            string ffmpegarguments = $"-i {absolutewebmpath} {absolutemp4path}";
+
+            Process p = Process.Start(ffmpegexe, ffmpegarguments);
+
+            p.WaitForExit();
+
+            return Url.Content(relativemp4path);
+            //  return "http://reactionroullete.azurewebsites.net/testData/WIN_20160402_00_37_01_Pro.mp4";
 
         }
 
