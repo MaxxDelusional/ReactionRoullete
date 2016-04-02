@@ -3,10 +3,14 @@
   "frameworks": {
     "dnx451": {
       "bin": {
+<<<<<<< HEAD
+        "assembly": "../../src/ReactionRoullete/Microsoft.ProjectOxford.Emotion.dll"
+=======
         "assembly": "../../lib/dnx451/Microsoft.ProjectOxford.Emotion.dll"
       },
       "dependencies": {
         "Microsoft.ProjectOxford.Common": "1.0.0-*"
+>>>>>>> master
       }
     }
   }
