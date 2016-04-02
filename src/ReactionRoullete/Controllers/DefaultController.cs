@@ -160,6 +160,7 @@ namespace ReactionRoullete.Controllers
 
             Reaction averageReaction = new Reaction();
             int count = 0;
+
             var releventReactions = (from x in db.Reactions
                                      where x.YoutubeVideoDescriptionID == youtubeVideoDescriptionID
                                      && x.ID != reactionID
@@ -176,11 +177,7 @@ namespace ReactionRoullete.Controllers
             averageReaction.Surprise = releventReactions.Where(x => x.Surprise != null).Average(x => x.Surprise);
 
 
-
             ViewBag.AverageReaction = averageReaction;
-
-
-
 
             return View(videoDescription);
         }
