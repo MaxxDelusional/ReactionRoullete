@@ -12,7 +12,7 @@ using Microsoft.AspNet.Hosting;
 using Newtonsoft.Json;
 
 using System.Diagnostics;
-
+using System.Text;
 
 namespace ReactionRoullete.Controllers
 {
@@ -25,6 +25,7 @@ namespace ReactionRoullete.Controllers
         private readonly AzureStorageService _StorageService;
         private readonly FFMpegLocator _FFMpegLocator;
 
+        const string ExpressionStringMarker = "NHFDUSAC";
 
         public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment, AzureStorageService storageService, FFMpegLocator ffmpegLocator)
         {
@@ -206,8 +207,13 @@ namespace ReactionRoullete.Controllers
 
                     int totalNumberOfEvents = 0;
 
+
                     WindowFaceDistribution distributionAggregator = new WindowFaceDistribution();
                     WindowMeanScores meanAggregator = new WindowMeanScores();
+
+                    StringBuilder windowstringbuilder = new StringBuilder();
+
+
 
                     foreach (var fragment in pr.Fragments)
                     {
@@ -242,6 +248,28 @@ namespace ReactionRoullete.Controllers
                                     meanAggregator.Sadness += subEvent.WindowMeanScores.Sadness;
                                     meanAggregator.Surprise += subEvent.WindowMeanScores.Surprise;
 
+                                    float[] elems = new float[] {subEvent.WindowMeanScores.Neutral,
+                                    subEvent.WindowMeanScores.Happiness,
+                                    subEvent.WindowMeanScores.Fear,
+                                    subEvent.WindowMeanScores.Disgust,
+                                    subEvent.WindowMeanScores.Surprise,
+                                    subEvent.WindowMeanScores.Sadness,
+                                    subEvent.WindowMeanScores.Anger,
+                                    subEvent.WindowMeanScores.Contempt,
+                                };
+
+                                    var max = elems.Max();
+
+                                    int idx = 0;
+
+                                    for (int i = 0; i < elems.Length; i++)
+                                        if (elems[i] == max)
+                                        {
+                                            idx = i;
+                                            break;
+                                        }
+
+                                    windowstringbuilder.Append(ExpressionStringMarker[idx]);
 
                                     totalNumberOfEvents++;
                                 }
@@ -275,6 +303,8 @@ namespace ReactionRoullete.Controllers
                     reaction.Sadness = distributionAggregator.Sadness;
                     reaction.Surprise = distributionAggregator.Surprise;
 
+                    var window = windowstringbuilder.ToString();
+
 
                     reaction.DateProcessed = DateTimeOffset.Now;
 
@@ -289,7 +319,7 @@ namespace ReactionRoullete.Controllers
                 }
             }
 
-         
+
 
             return reaction;
         }
@@ -299,7 +329,7 @@ namespace ReactionRoullete.Controllers
         public async Task<Reaction> Test()
         {
             //var result = await emotionService.RecognizeInVideoAsync("https://reactionroulette.blob.core.windows.net/preflight/b2300c12-6637-4d1c-9a75-de7e0be3004d.mp4");
-            return await GetReaction(38);
+            return await GetReaction(48);
 
         }
 
