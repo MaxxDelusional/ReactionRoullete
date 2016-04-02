@@ -10,36 +10,40 @@ namespace ReactionRoullete.Services
 {
     public class EmotionServiceClient
     {
-        private string key;
+        private EmotionServiceApiKeyProvider _KeyProvider;
 
-        public EmotionServiceClient(string key)
+        public EmotionServiceClient(EmotionServiceApiKeyProvider keyProvider)
         {
-            this.key = key;
+            _KeyProvider = keyProvider;
         }
 
-        public async Task<VideoEmotionRecognitionOperation> RecognizeAsync(string url)
-        {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
+        //public async Task<VideoEmotionRecognitionOperation> RecognizeAsync(string url)
+        //{
+        //    using (HttpClient httpClient = new HttpClient())
+        //    {
+        //        httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
 
-                StringContent body = new StringContent("{ \"url\": \"" + url + "\" }", Encoding.UTF8, "application/json");
+        //        StringContent body = new StringContent("{ \"url\": \"" + url + "\" }", Encoding.UTF8, "application/json");
 
-                var result = await httpClient.PostAsync("https://api.projectoxford.ai/emotion/v1.0/recognize", body);
+        //        var result = await httpClient.PostAsync("https://api.projectoxford.ai/emotion/v1.0/recognize", body);
 
-                if (result.IsSuccessStatusCode)
-                { 
-                    string response = await result.Content.ReadAsStringAsync();
-                }
-                else
-                {
+        //        if (result.IsSuccessStatusCode)
+        //        {
+        //            success = true;
+        //            string response = await result.Content.ReadAsStringAsync();
 
-                }
-            }
 
-            return null;
+        //        }
+        //        else
+        //        {
 
-        }
+        //        }
+        //    }
+
+
+        //    return null;
+
+        //}
 
 
 
@@ -48,40 +52,80 @@ namespace ReactionRoullete.Services
         public async Task<VideoEmotionRecognitionOperation> RecognizeInVideoAsync(string url)
         {
 
+            string key = _KeyProvider.GetApiKey(null);
+            int trycount = 0;
+            bool success = false;
+            bool retry = false;
+            bool wasretry = true;
 
-
-            using (HttpClient httpClient = new HttpClient())
+            while (!success && trycount < 10)
             {
-                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
-
-                StringContent body = new StringContent("{ \"url\": \"" + url + "\" }", Encoding.UTF8, "application/json");
-
-
-                var result = await httpClient.PostAsync("https://api.projectoxford.ai/emotion/v1.0/recognizeinvideo", body);
-
-                if (result.IsSuccessStatusCode)
+                using (HttpClient httpClient = new HttpClient())
                 {
-                    string operationalUrl = result.Headers.GetValues("Operation-Location").FirstOrDefault();
-                    return new VideoEmotionRecognitionOperation()
+                    httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
+
+                    StringContent body = new StringContent("{ \"url\": \"" + url + "\" }", Encoding.UTF8, "application/json");
+
+
+                    var result = await httpClient.PostAsync("https://api.projectoxford.ai/emotion/v1.0/recognizeinvideo", body);
+
+                    if (result.IsSuccessStatusCode)
                     {
-                        Url = operationalUrl
-                    };
+                        string operationalUrl = result.Headers.GetValues("Operation-Location").FirstOrDefault();
+                        return new VideoEmotionRecognitionOperation()
+                        {
+                            Url = operationalUrl,
+                            ApiKey = key
+                        };
+                    }
+                    else
+                    {
+                        if (result.StatusCode == (System.Net.HttpStatusCode)429)
+                        {
+                            IEnumerable<string> retryvalues = null;
+                            if (result.Headers.TryGetValues("Retry-After", out retryvalues))
+                            {
+                                var waittime = retryvalues.Select(v =>
+                                {
+                                    int i = 0;
+                                    if (int.TryParse(v, out i)) return i;
+                                    else return 0;
+                                }).Max();
+
+                                if (!wasretry && waittime < 5)
+                                {
+                                    retry = true;
+                                    waittime++;
+                                    await Task.Delay(waittime * 1000);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                trycount++;
+               
+                if (!retry)
+                {
+                    key = _KeyProvider.GetApiKey(key);
+                    wasretry = false;
                 }
                 else
                 {
-
+                    retry = false;
+                    wasretry = true;
                 }
             }
 
             return null;
         }
 
-        public async Task<VideoOperationResult> GetOperationResultAsync(string operationUrl)
+        public async Task<VideoOperationResult> GetOperationResultAsync(string operationUrl, string apiKey)
         {
 
             using (HttpClient httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
+                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey);
 
                 string json = await httpClient.GetStringAsync(operationUrl);
 
@@ -121,7 +165,7 @@ namespace ReactionRoullete.Services
 
     public class VideoEmotionRecognitionOperation
     {
-
+        public string ApiKey { get; set; }
         public string Url { get; set; }
     }
 
