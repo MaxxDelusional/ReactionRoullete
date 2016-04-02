@@ -72,3 +72,29 @@ td {
 h2 {
     font-size:40px;
 }
+
+
+.progress-bar-N {
+    background-color:transparent !important;
+}
+.progress-bar-H {
+    background-color:#1cb026;
+}
+.progress-bar-F {
+    background-color:#9d5103;
+}
+.progress-bar-D {
+    background-color:#2cb09a;
+}
+.progress-bar-U {
+    background-color:#ffe600;
+}
+.progress-bar-S {
+    background-color:#3f86a1;
+}
+.progress-bar-A {
+    background-color:#970202;
+}
+.progress-bar-C {
+    background-color:#b5ba81;
+}

@@ -80,6 +80,7 @@
 
 </div>
 
+<h4>Reaction Timeline</h4>
 <div class="row">
     <div class="col-xs-12">
 
@@ -182,15 +183,15 @@
             $('#primaryResultName').text(results.bestMetricDisplayName);
             $('#primaryResultIcon').text(getEmojiByName(results.bestMetricDisplayName));
 
-            var stringLength = result.serializedTimeString.length;
+            var stringLength = results.serializedTimeString.length;
             var percentPerPiece = 100 / stringLength;
 
             for(i =0; i< stringLength; i++)
             {
 
-                var currentCar = result.serializedTimeString.charAt(i);
+                var currentChar = results.serializedTimeString.charAt(i);
 
-                $('#progressContainer').append('<div class="progress-bar progress-bar-success" role="progressbar" style="width:"' + percentPerPiece + '%">')
+                $('#progressContainer').append('<div class="progress-bar progress-bar-' + currentChar + '" role="progressbar" style="width:' + percentPerPiece + '%">');
 
                 
             }
