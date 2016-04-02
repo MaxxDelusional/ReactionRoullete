@@ -6,11 +6,8 @@ using Microsoft.AspNet.Mvc;
 using ReactionRoullete.Services;
 using ReactionRoullete.Models;
 using Microsoft.Data.Entity;
-<<<<<<< HEAD
 using Microsoft.ProjectOxford.Emotion;
 using Microsoft.ProjectOxford.Emotion.Contract;
-=======
->>>>>>> master
 using Microsoft.AspNet.Http;
 
 namespace ReactionRoullete.Controllers
