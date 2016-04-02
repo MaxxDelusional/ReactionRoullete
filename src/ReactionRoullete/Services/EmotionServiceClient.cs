@@ -47,6 +47,8 @@ namespace ReactionRoullete.Services
 
 
 
+
+
         public async Task<VideoEmotionRecognitionOperation> RecognizeInVideoAsync(string url)
         {
 
@@ -78,8 +80,22 @@ namespace ReactionRoullete.Services
             return null;
         }
 
-    }
+        public async Task<string> RecognitionInVideoOperationResult(string operationUrl)
+        {
 
+            using (HttpClient httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
+
+                string response = await httpClient.GetStringAsync(operationUrl);
+                return response;
+            }
+
+            return null;
+        }
+
+
+    }
     public class VideoEmotionRecognitionOperation
     {
 

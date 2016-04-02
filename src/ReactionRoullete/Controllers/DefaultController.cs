@@ -7,6 +7,7 @@ using ReactionRoullete.Services;
 using ReactionRoullete.Models;
 using Microsoft.Data.Entity;
 using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Hosting;
 
 namespace ReactionRoullete.Controllers
 {
@@ -15,13 +16,14 @@ namespace ReactionRoullete.Controllers
         private readonly YoutubeService youtubeService;
         private readonly ApplicationDbContext db;
         private readonly EmotionServiceClient emotionService;
+        private readonly IHostingEnvironment hostingEnvironment;
 
-
-        public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService)
+        public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment)
         {
             this.youtubeService = youtubeService;
             this.db = db;
             this.emotionService = emotionService;
+            this.hostingEnvironment = hostingEnvironment;
    
         }
         public async Task< IActionResult> Index()
@@ -63,17 +65,9 @@ namespace ReactionRoullete.Controllers
         {
             var videoDescription = await db.YoutubeVideoDescriptions.FirstOrDefaultAsync(x => x.ID == youtubeVideoDescriptionID);
 
-
-            //Save recordedVideo to Azure
-
-            //Get Url from Azure
-
-            //Pass url to cognitive
-
-            string url = "http://reactionroullete.azurewebsites.net/testData/WIN_20160402_00_37_01_Pro.mp4";
-
+           string url = await  PersistVideoFile(recordedVideo);
+  
             VideoEmotionRecognitionOperation recognizeResult = null;
-
 
             try
             {
@@ -87,12 +81,27 @@ namespace ReactionRoullete.Controllers
             return RedirectToAction("Results", "Default", new { operationUrl = recognizeResult.Url });
         }
 
+        private async Task<string> PersistVideoFile(IFormFile videoFile)
+        {
+
+            string relativePath = "uploads/videos/" + Guid.NewGuid().ToString() + ".mp4";
+            await videoFile.SaveAsAsync(hostingEnvironment.MapPath(relativePath));
+
+
+            return Url.Content(relativePath);
+          //  return "http://reactionroullete.azurewebsites.net/testData/WIN_20160402_00_37_01_Pro.mp4";
+
+        }
+
         public async Task<IActionResult> Results(long youtubeVideoDescriptionID, string operationUrl)
         {
             var videoDescription = await db.YoutubeVideoDescriptions.FirstOrDefaultAsync(x => x.ID == youtubeVideoDescriptionID);
-
-
             ViewBag.OperationUrl = operationUrl;
+
+
+
+
+            var stuff = await emotionService.RecognitionInVideoOperationResult(operationUrl);
 
             return View(videoDescription);
         }
