@@ -18,8 +18,13 @@ namespace ReactionRoullete.Models
 
         public YoutubeVideoDescription YoutubeVideoDescription { get; set; }
 
+
         [JsonProperty("dateProcessed")]
         public DateTimeOffset? DateProcessed { get; set; }
+
+
+        [JsonProperty("operationUrl")]
+        public string OperationUrl { get; set; }
 
         [NotMapped]
         [JsonProperty("processingComplete")]

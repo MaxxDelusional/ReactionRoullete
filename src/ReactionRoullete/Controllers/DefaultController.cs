@@ -27,6 +27,7 @@ namespace ReactionRoullete.Controllers
 
         public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService, IHostingEnvironment hostingEnvironment, AzureStorageService storageService)
         {
+
             this.youtubeService = youtubeService;
             this.db = db;
             this.emotionService = emotionService;
@@ -35,16 +36,12 @@ namespace ReactionRoullete.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            //var videos = from x in await youtubeService.GetYoutubeVideoDescriptions()
-            //             select x;
-
-
-
-            var videoDescriptions = from x in db.YoutubeVideoDescriptions
-                                    select x;
-            return View(videoDescriptions);
+            var randomVideoDescription = await (from x in db.YoutubeVideoDescriptions
+                                                orderby Guid.NewGuid()
+                                                select x).FirstOrDefaultAsync();
+            return RedirectToAction("React", "Default", new { youtubeVideoDescriptionID = randomVideoDescription.ID });
         }
 
         public IActionResult About()
@@ -83,7 +80,7 @@ namespace ReactionRoullete.Controllers
 
             VideoEmotionRecognitionOperation recognizeResult = null;
 
-          try
+            try
             {
                 recognizeResult = await emotionService.RecognizeInVideoAsync(url);
             }
@@ -92,19 +89,19 @@ namespace ReactionRoullete.Controllers
 
             }
 
-          
+
 
 
             recognizeResult = await emotionService.RecognizeInVideoAsync(url);
 
-    Reaction reaction = new Reaction();
-    reaction.DateCreated = DateTimeOffset.Now;
+            Reaction reaction = new Reaction();
+            reaction.DateCreated = DateTimeOffset.Now;
             reaction.YoutubeVideoDescriptionID = youtubeVideoDescriptionID;
-
+            reaction.OperationUrl = recognizeResult.Url;
             db.Reactions.Add(reaction);
             await db.SaveChangesAsync();
 
-            return RedirectToAction("Results", "Default", new { operationUrl = recognizeResult.Url, reactionID = reaction.ID });
+            return RedirectToAction("Results", "Default", new { reactionID = reaction.ID });
         }
 
         private async Task<string> PersistVideoFile(IFormFile videoFile)
@@ -136,30 +133,28 @@ namespace ReactionRoullete.Controllers
 
             return storageuri.ToString();
 
-          //  return Url.Content(relativemp4path);
+            //  return Url.Content(relativemp4path);
 
 
         }
 
-        public async Task<IActionResult> Results(long youtubeVideoDescriptionID, long reactionID,  string operationUrl)
+        public async Task<IActionResult> Results(long youtubeVideoDescriptionID, long reactionID)
         {
             var videoDescription = await db.YoutubeVideoDescriptions.FirstOrDefaultAsync(x => x.ID == youtubeVideoDescriptionID);
-            ViewBag.OperationUrl = operationUrl;
+
             ViewBag.ReactionID = reactionID;
-           // var operationResult = await emotionService.GetOperationResultAsync(operationUrl);
+            // var operationResult = await emotionService.GetOperationResultAsync(operationUrl);
 
 
             return View(videoDescription);
         }
 
 
-        public async Task<Reaction> GetVideoOperationResult(string operationUrl, long reactionID)
+        public async Task<Reaction> GetReaction(long reactionID)
         {
             Reaction reaction = await db.Reactions.FirstOrDefaultAsync(x => x.ID == reactionID);
 
-
-
-            var operationResult = await emotionService.GetOperationResultAsync(operationUrl);
+            var operationResult = await emotionService.GetOperationResultAsync(reaction.OperationUrl);
 
             if (operationResult.Status == "Succeeded")
             {
