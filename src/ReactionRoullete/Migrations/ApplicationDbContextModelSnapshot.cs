@@ -146,6 +146,36 @@ namespace ReactionRoullete.Migrations
                     b.HasAnnotation("Relational:TableName", "AspNetUsers");
                 });
 
+            modelBuilder.Entity("ReactionRoullete.Models.Reaction", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double?>("Anger");
+
+                    b.Property<double?>("Contempt");
+
+                    b.Property<DateTimeOffset>("DateCreated");
+
+                    b.Property<DateTimeOffset?>("DateProcessed");
+
+                    b.Property<double?>("Disgust");
+
+                    b.Property<double?>("Fear");
+
+                    b.Property<double?>("Happiness");
+
+                    b.Property<double?>("Neutral");
+
+                    b.Property<double?>("Sadness");
+
+                    b.Property<double?>("Surprise");
+
+                    b.Property<long>("YoutubeVideoDescriptionID");
+
+                    b.HasKey("ID");
+                });
+
             modelBuilder.Entity("ReactionRoullete.Models.YoutubeVideoDescription", b =>
                 {
                     b.Property<long>("ID")
@@ -190,6 +220,13 @@ namespace ReactionRoullete.Migrations
                     b.HasOne("ReactionRoullete.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("ReactionRoullete.Models.Reaction", b =>
+                {
+                    b.HasOne("ReactionRoullete.Models.YoutubeVideoDescription")
+                        .WithMany()
+                        .HasForeignKey("YoutubeVideoDescriptionID");
                 });
         }
     }

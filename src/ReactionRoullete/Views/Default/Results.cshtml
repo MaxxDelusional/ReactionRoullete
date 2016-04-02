@@ -12,4 +12,81 @@
 
     <h4>Operation Url</h4>
     <p>@ViewBag.OperationUrl</p>
+
+
+
+
+
 </div>
+
+@section scripts
+{
+
+    <script>
+
+        var interval = null;
+
+        $(function () {
+
+            interval = setInterval(function () {
+
+                $.ajaxSetup({ cache: false });
+
+                $.getJSON('/Default/GetVideoOperationResult', { operationUrl: '@ViewBag.OperationUrl', reactionID: '@ViewBag.ReactionID'}, function (result) {
+
+                    console.log(result);
+                    if (result == null) {
+
+                        clearInterval(interval);
+                    }
+
+                    if (result.processingComplete) {
+                        alert("I am clearing the interval");
+                        clearInterval(interval);
+                        displayResults(result);
+
+                    }
+                    else if (result.processingFailed) {
+
+                        clearInterval(interval);
+                        alert('Nope');
+                    }
+                    /*
+                    if (result.status == 'Succeeded') {
+
+                        clearInterval(interval);
+                        displayResults(result);
+
+                    }
+                    else if (result.status == 'Uploading') {
+
+
+                    }
+                    else if (result.status == 'Not Started') {
+
+
+                    }
+                    else if (result.status == 'Running') {
+
+
+                    }
+                    else if (result.status == 'Failed') {
+                        clearInterval(interval);
+                        alert('Nope');
+
+                    }
+                    */
+
+                });
+
+            }, 10000);
+
+
+        });
+
+        function displayResults(results) {
+
+
+        }
+    </script>
+}

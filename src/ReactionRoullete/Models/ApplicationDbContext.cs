@@ -11,6 +11,7 @@ namespace ReactionRoullete.Models
     {
 
         public DbSet<YoutubeVideoDescription> YoutubeVideoDescriptions { get; set; }
+        public DbSet<Reaction> Reactions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
