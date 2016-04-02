@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 130px;
     padding-bottom: 20px;
 }
 
@@ -38,7 +38,7 @@ body { background-color:#fff; }
 
 .navbar-inverse {
 
-    background-color:#1e4700;
+    background-color:#004721;
     min-height:110px;
 }
 
@@ -55,7 +55,20 @@ body { background-color:#fff; }
 
 .btn-primary {
 
-    background-color:#1e4700;
+    background-color:#004721;
     border-color:black;
      color:#ffd800;
+}
+
+th {
+    text-align:center;
+    font-size:18px;
+}
+td {
+    text-align:center;
+    font-size:18px;
+}
+
+h2 {
+    font-size:40px;
 }

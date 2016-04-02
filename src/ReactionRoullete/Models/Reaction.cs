@@ -23,6 +23,9 @@ namespace ReactionRoullete.Models
         public DateTimeOffset? DateProcessed { get; set; }
 
 
+        [JsonProperty("serializedTimeString")]
+        public string SerializedTimeString { get; set; }
+
         [JsonProperty("operationUrl")]
         public string OperationUrl { get; set; }
 
@@ -54,5 +57,54 @@ namespace ReactionRoullete.Models
         public double? Fear { get; set; }
         [JsonProperty("contempt")]
         public double? Contempt { get; set; }
+
+
+        public string GetBestMetricDisplayName()
+        {
+            double currentBest = this.Neutral.GetValueOrDefault(0);
+            string name = nameof(this.Neutral);
+
+
+            if (this.Happiness.GetValueOrDefault(0) > currentBest)
+            {
+                name = nameof(this.Happiness);
+                currentBest = this.Happiness.GetValueOrDefault(0);
+            }
+
+            if (this.Surprise.GetValueOrDefault(0) > currentBest)
+            {
+                name = nameof(this.Surprise);
+                currentBest = this.Surprise.GetValueOrDefault(0);
+            }
+            if (this.Sadness.GetValueOrDefault(0) > currentBest)
+            {
+                name = nameof(this.Sadness);
+                currentBest = this.Sadness.GetValueOrDefault(0);
+            }
+            if (this.Anger.GetValueOrDefault(0) > currentBest)
+            {
+                name = nameof(this.Anger);
+                currentBest = this.Anger.GetValueOrDefault(0);
+            }
+            if (this.Disgust.GetValueOrDefault(0) > currentBest)
+            {
+                name = nameof(this.Disgust);
+                currentBest = this.Disgust.GetValueOrDefault(0);
+            }
+            if (this.Fear.GetValueOrDefault(0) > currentBest)
+            {
+                name = nameof(this.Fear);
+                currentBest = this.Fear.GetValueOrDefault(0);
+            }
+            if (this.Contempt.GetValueOrDefault(0) > currentBest)
+            {
+                name = nameof(this.Contempt);
+                currentBest = this.Contempt.GetValueOrDefault(0);
+            }
+
+
+
+            return name;
+        }
     }
 }

@@ -3,54 +3,79 @@
     ViewData["Title"] = "Results";
 }
 
-
-<h2>Results</h2>
-
-<h3>We are now processing your reaction! This can take a while depending on the length of your video. Please leave your browser window open until your results are displayed.</h3>
+<h2 id="pageTitle">Processing...</h2>
 
 
-<div class="row">
+
+<h4 id="processingMessage">We are now processing your reaction! This can take a while depending on the length of your video. Please leave your browser window open until your results are displayed.</h4>
+
+@*<div class="row">
 
     <div class="col-xs-6">
         <h4>Operation Url</h4>
         <p>@ViewBag.OperationUrl</p>
     </div>
-    <div class="col-xs-6">
-        <table width="100%">
-            <tr>
-                <th>Neutral</th>
-                <th>Happiness</th>
-                <th>Surprise</th>
-                <th>Sadness</th>
-            </tr>
-            <tr>
-                <td id="outputNeutral"></td>
-                <td id="outputHappiness"></td>
-                <td id="outputSurprise"></td>
-                <td id="outputSadness"></td>
-            </tr>
+    </div>*@
 
+<div class="row">
 
-            <tr>
+    <div class="col-xs-12">
 
-                <th>Anger</th>
-                <th>Disgust</th>
-                <th>Fear</th>
-                <th>Contempt</th>
-
-            </tr>
-            <tr>
-                <td id="outputAnger"></td>
-                <td id="outputDisgust"></td>
-                <td id="outputFear"></td>
-                <td id="outputContempt"></td>
-            </tr>
-
-
-        </table>
+        </div>
     </div>
 
-</div>
+        <div class="row">
+
+            <div class="col-xs-12">
+                <br />
+                <table style="width:100%;" class="table">
+                    <tr>
+                        <th>&nbsp;</th>
+
+                        <th width="10%">&#x1F601;<br />Happiness</th>
+                        <th width="10%">&#x1F632;<br />Fear</th>
+                        <th width="10%">&#x1F61E;<br />Disgust</th>
+                        <th width="10%">&#x1F631;<br />Surprise</th>
+                        <th width="10%">&#x1F622;<br />Sadness</th>
+                        <th width="10%">&#x1F620;<br />Anger</th>
+                        <th width="10%">&#x1F614;<br />Contempt</th>
+                        <th width="10%">&#x1F636;<br />Neutral</th>
+
+                    </tr>
+                    @if (ViewBag.AverageReaction != null)
+            {
+                        <tr>
+                            <td style="font-size:24px;">Everyone Else</td>
+                            <td>@ViewBag.AverageReaction.Happiness?.ToString("##0.0")</td>
+                            <td>@ViewBag.AverageReaction.Fear?.ToString("##0.0")</td>
+                            <td>@ViewBag.AverageReaction.Disgust?.ToString("##0.0")</td>
+                            <td>@ViewBag.AverageReaction.Surprise?.ToString("##0.0")</td>
+
+                            <td>@ViewBag.AverageReaction.Sadness?.ToString("##0.0")</td>
+                            <td>@ViewBag.AverageReaction.Anger?.ToString("##0.0")</td>
+                            <td>@ViewBag.AverageReaction.Contempt?.ToString("##0.0")</td>
+                            <td>@ViewBag.AverageReaction.Neutral?.ToString("##0.0")</td>
+                        </tr>
+                    }
+
+
+                    <tr>
+                        <td style="font-size:24px;">You</td>
+                        <td id="outputHappiness">--</td>
+                        <td id="outputFear">--</td>
+                        <td id="outputDisgust">--</td>
+                        <td id="outputSurprise">--</td>
+                        <td id="outputSadness">--</td>
+                        <td id="outputAnger">--</td>
+                        <td id="outputContempt">--</td>
+                        <td id="outputNeutral">--</td>
+                    </tr>
+
+
+                </table>
+            </div>
+
+        </div>
 
 
 
@@ -58,85 +83,87 @@
 
 
 
-@section scripts
+        @section scripts
     {
 
-    <script>
+            <script>
 
-        var interval = null;
+                var interval = null;
 
-        $(function () {
+                $(function () {
 
-            interval = setInterval(function () {
+                    interval = setInterval(function () {
 
-                $.ajaxSetup({ cache: false });
+                        $.ajaxSetup({ cache: false });
 
-                $.getJSON('/Default/GetReaction', { reactionID: '@ViewBag.ReactionID' }, function (result) {
+                        $.getJSON('/Default/GetReaction', { reactionID: '@ViewBag.ReactionID' }, function (result) {
 
-                    console.log(result);
-                    if (result == null) {
+                            console.log(result);
+                            if (result == null) {
 
-                        clearInterval(interval);
-                    }
+                                clearInterval(interval);
+                            }
 
-                    if (result.processingComplete) {
-                        clearInterval(interval);
-                        displayResults(result);
+                            if (result.processingComplete) {
+                                clearInterval(interval);
+                                displayResults(result);
+                                $('#pageTitle').text('The results are in!');
+                                $('#processingMessage').hide();
 
-                    }
-                    else if (result.processingFailed) {
+                            }
+                            else if (result.processingFailed) {
 
-                        clearInterval(interval);
-                        alert('Nope');
-                    }
-                    /*
-                    if (result.status == 'Succeeded') {
+                                clearInterval(interval);
+                                alert('Nope');
+                            }
+                            /*
+                            if (result.status == 'Succeeded') {
 
-                        clearInterval(interval);
-                        displayResults(result);
+                                clearInterval(interval);
+                                displayResults(result);
 
-                    }
-                    else if (result.status == 'Uploading') {
-
-
-                    }
-                    else if (result.status == 'Not Started') {
+                            }
+                            else if (result.status == 'Uploading') {
 
 
-                    }
-                    else if (result.status == 'Running') {
+                            }
+                            else if (result.status == 'Not Started') {
 
 
-                    }
-                    else if (result.status == 'Failed') {
-                        clearInterval(interval);
-                        alert('Nope');
+                            }
+                            else if (result.status == 'Running') {
 
-                    }
-                    */
+
+                            }
+                            else if (result.status == 'Failed') {
+                                clearInterval(interval);
+                                alert('Nope');
+
+                            }
+                            */
+
+                        });
+
+                    }, 10000);
+
 
                 });
 
-            }, 10000);
+                function displayResults(results) {
 
 
-        });
+                    console.log(results);
 
-        function displayResults(results) {
-
-
-            console.log(results);
-
-            $('#outputNeutral').text(results.neutral);
-            $('#outputHappiness').text(results.happiness);
-            $('#outputSurprise').text(results.surprise);
-            $('#outputSadness').text(results.sadness);
-            $('#outputAnger').text(results.anger);
-            $('#outputDisgust').text(results.disgust);
-            $('#outputFear').text(results.fear);
-            $('#outputContempt').text(results.contempt);
+                    $('#outputNeutral').text(results.neutral);
+                    $('#outputHappiness').text(results.happiness);
+                    $('#outputSurprise').text(results.surprise);
+                    $('#outputSadness').text(results.sadness);
+                    $('#outputAnger').text(results.anger);
+                    $('#outputDisgust').text(results.disgust);
+                    $('#outputFear').text(results.fear);
+                    $('#outputContempt').text(results.contempt);
 
 
+                }
+            </script>
         }
-    </script>
-}

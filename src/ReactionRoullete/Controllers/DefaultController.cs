@@ -156,6 +156,31 @@ namespace ReactionRoullete.Controllers
             // var operationResult = await emotionService.GetOperationResultAsync(operationUrl);
 
 
+
+            Reaction averageReaction = new Reaction();
+            int count = 0;
+            var releventReactions = (from x in db.Reactions
+                                     where x.YoutubeVideoDescriptionID == youtubeVideoDescriptionID
+                                     && x.ID != reactionID
+                                     select x);
+
+
+            averageReaction.Anger = releventReactions.Where(x => x.Anger != null).Average(x => x.Anger);
+            averageReaction.Contempt = releventReactions.Where(x => x.Contempt != null).Average(x => x.Contempt);
+            averageReaction.Disgust = releventReactions.Where(x => x.Disgust != null).Average(x => x.Disgust);
+            averageReaction.Fear = releventReactions.Where(x => x.Fear != null).Average(x => x.Fear);
+            averageReaction.Happiness = releventReactions.Where(x => x.Happiness != null).Average(x => x.Happiness);
+            averageReaction.Neutral = releventReactions.Where(x => x.Neutral != null).Average(x => x.Neutral);
+            averageReaction.Sadness = releventReactions.Where(x => x.Sadness != null).Average(x => x.Sadness);
+            averageReaction.Surprise = releventReactions.Where(x => x.Surprise != null).Average(x => x.Surprise);
+
+
+
+            ViewBag.AverageReaction = averageReaction;
+
+
+
+
             return View(videoDescription);
         }
 
@@ -167,102 +192,105 @@ namespace ReactionRoullete.Controllers
             if (string.IsNullOrEmpty(reaction.ApiKey))
                 reaction.ApiKey = "a728c60e913a44aeb33b659cb91e057e";
 
-            if (reaction.DateProcessed.HasValue)
-            {
-                return reaction;
-            }
-
-            var operationResult = await emotionService.GetOperationResultAsync(reaction.OperationUrl, reaction.ApiKey);
-
-            if (operationResult.Status == "Succeeded")
+            if (!reaction.DateProcessed.HasValue)
             {
 
-                ProcessingResult pr = JsonConvert.DeserializeObject<ProcessingResult>(operationResult.ProcessingResultJson);
 
+                var operationResult = await emotionService.GetOperationResultAsync(reaction.OperationUrl, reaction.ApiKey);
 
-                int totalNumberOfEvents = 0;
-
-                WindowFaceDistribution distributionAggregator = new WindowFaceDistribution();
-                WindowMeanScores meanAggregator = new WindowMeanScores();
-
-                foreach (var fragment in pr.Fragments)
+                if (operationResult.Status == "Succeeded")
                 {
-                    if (null == fragment)
-                        continue;
 
-                    if (null != fragment.Events)
-                        foreach (var ev in fragment.Events)
-                        {
-                            if (null == ev)
-                                continue;
+                    ProcessingResult pr = JsonConvert.DeserializeObject<ProcessingResult>(operationResult.ProcessingResultJson);
 
-                            foreach (var subEvent in ev)
+
+                    int totalNumberOfEvents = 0;
+
+                    WindowFaceDistribution distributionAggregator = new WindowFaceDistribution();
+                    WindowMeanScores meanAggregator = new WindowMeanScores();
+
+                    foreach (var fragment in pr.Fragments)
+                    {
+                        if (null == fragment)
+                            continue;
+
+                        if (null != fragment.Events)
+                            foreach (var ev in fragment.Events)
                             {
-                                if (null == subEvent)
+                                if (null == ev)
                                     continue;
 
-                                distributionAggregator.Anger += subEvent.WindowFaceDistribution.Anger;
-                                distributionAggregator.Contempt += subEvent.WindowFaceDistribution.Contempt;
-                                distributionAggregator.Disgust += subEvent.WindowFaceDistribution.Disgust;
-                                distributionAggregator.Fear += subEvent.WindowFaceDistribution.Fear;
-                                distributionAggregator.Happiness += subEvent.WindowFaceDistribution.Happiness;
-                                distributionAggregator.Sadness += subEvent.WindowFaceDistribution.Sadness;
-                                distributionAggregator.Surprise += subEvent.WindowFaceDistribution.Surprise;
+                                foreach (var subEvent in ev)
+                                {
+                                    if (null == subEvent)
+                                        continue;
+
+                                    distributionAggregator.Anger += subEvent.WindowFaceDistribution.Anger;
+                                    distributionAggregator.Contempt += subEvent.WindowFaceDistribution.Contempt;
+                                    distributionAggregator.Disgust += subEvent.WindowFaceDistribution.Disgust;
+                                    distributionAggregator.Fear += subEvent.WindowFaceDistribution.Fear;
+                                    distributionAggregator.Happiness += subEvent.WindowFaceDistribution.Happiness;
+                                    distributionAggregator.Sadness += subEvent.WindowFaceDistribution.Sadness;
+                                    distributionAggregator.Surprise += subEvent.WindowFaceDistribution.Surprise;
 
 
-                                meanAggregator.Anger += subEvent.WindowMeanScores.Anger;
-                                meanAggregator.Contempt += subEvent.WindowMeanScores.Contempt;
-                                meanAggregator.Disgust += subEvent.WindowMeanScores.Disgust;
-                                meanAggregator.Fear += subEvent.WindowMeanScores.Fear;
-                                meanAggregator.Happiness += subEvent.WindowMeanScores.Happiness;
-                                meanAggregator.Sadness += subEvent.WindowMeanScores.Sadness;
-                                meanAggregator.Surprise += subEvent.WindowMeanScores.Surprise;
+                                    meanAggregator.Anger += subEvent.WindowMeanScores.Anger;
+                                    meanAggregator.Contempt += subEvent.WindowMeanScores.Contempt;
+                                    meanAggregator.Disgust += subEvent.WindowMeanScores.Disgust;
+                                    meanAggregator.Fear += subEvent.WindowMeanScores.Fear;
+                                    meanAggregator.Happiness += subEvent.WindowMeanScores.Happiness;
+                                    meanAggregator.Sadness += subEvent.WindowMeanScores.Sadness;
+                                    meanAggregator.Surprise += subEvent.WindowMeanScores.Surprise;
 
 
-                                totalNumberOfEvents++;
+                                    totalNumberOfEvents++;
+                                }
                             }
-                        }
+                    }
+
+
+                    distributionAggregator.Anger = distributionAggregator.Anger / totalNumberOfEvents;
+                    distributionAggregator.Contempt += distributionAggregator.Contempt / totalNumberOfEvents;
+                    distributionAggregator.Disgust += distributionAggregator.Disgust / totalNumberOfEvents;
+                    distributionAggregator.Fear += distributionAggregator.Fear / totalNumberOfEvents;
+                    distributionAggregator.Happiness += distributionAggregator.Happiness / totalNumberOfEvents;
+                    distributionAggregator.Sadness += distributionAggregator.Sadness / totalNumberOfEvents;
+                    distributionAggregator.Surprise += distributionAggregator.Surprise / totalNumberOfEvents;
+
+                    meanAggregator.Anger = meanAggregator.Anger / totalNumberOfEvents;
+                    meanAggregator.Contempt += meanAggregator.Contempt / totalNumberOfEvents;
+                    meanAggregator.Disgust += meanAggregator.Disgust / totalNumberOfEvents;
+                    meanAggregator.Fear += meanAggregator.Fear / totalNumberOfEvents;
+                    meanAggregator.Happiness += meanAggregator.Happiness / totalNumberOfEvents;
+                    meanAggregator.Sadness += meanAggregator.Sadness / totalNumberOfEvents;
+                    meanAggregator.Surprise += meanAggregator.Surprise / totalNumberOfEvents;
+
+
+
+                    reaction.Anger = distributionAggregator.Anger;
+                    reaction.Contempt = distributionAggregator.Contempt;
+                    reaction.Disgust = distributionAggregator.Disgust;
+                    reaction.Fear = distributionAggregator.Fear;
+                    reaction.Happiness = distributionAggregator.Happiness;
+                    reaction.Sadness = distributionAggregator.Sadness;
+                    reaction.Surprise = distributionAggregator.Surprise;
+
+
+                    reaction.DateProcessed = DateTimeOffset.Now;
+
+                    await db.SaveChangesAsync();
+
+                    //   Reaction reaction = new Reaction();
                 }
-
-
-                distributionAggregator.Anger = distributionAggregator.Anger / totalNumberOfEvents;
-                distributionAggregator.Contempt += distributionAggregator.Contempt / totalNumberOfEvents;
-                distributionAggregator.Disgust += distributionAggregator.Disgust / totalNumberOfEvents;
-                distributionAggregator.Fear += distributionAggregator.Fear / totalNumberOfEvents;
-                distributionAggregator.Happiness += distributionAggregator.Happiness / totalNumberOfEvents;
-                distributionAggregator.Sadness += distributionAggregator.Sadness / totalNumberOfEvents;
-                distributionAggregator.Surprise += distributionAggregator.Surprise / totalNumberOfEvents;
-
-                meanAggregator.Anger = meanAggregator.Anger / totalNumberOfEvents;
-                meanAggregator.Contempt += meanAggregator.Contempt / totalNumberOfEvents;
-                meanAggregator.Disgust += meanAggregator.Disgust / totalNumberOfEvents;
-                meanAggregator.Fear += meanAggregator.Fear / totalNumberOfEvents;
-                meanAggregator.Happiness += meanAggregator.Happiness / totalNumberOfEvents;
-                meanAggregator.Sadness += meanAggregator.Sadness / totalNumberOfEvents;
-                meanAggregator.Surprise += meanAggregator.Surprise / totalNumberOfEvents;
-
-
-
-                reaction.Anger = distributionAggregator.Anger;
-                reaction.Contempt = distributionAggregator.Contempt;
-                reaction.Disgust = distributionAggregator.Disgust;
-                reaction.Fear = distributionAggregator.Fear;
-                reaction.Happiness = distributionAggregator.Happiness;
-                reaction.Sadness = distributionAggregator.Sadness;
-                reaction.Surprise = distributionAggregator.Surprise;
-
-
-                reaction.DateProcessed = DateTimeOffset.Now;
-
-                await db.SaveChangesAsync();
-
-                //   Reaction reaction = new Reaction();
+                if (operationResult.Status == "Failed")
+                {
+                    //Concider deleting reaction here
+                    return null;
+                }
             }
-            if (operationResult.Status == "Failed")
-            {
-                //Concider deleting reaction here
-                return null;
-            }
+
+         
+
             return reaction;
         }
 
