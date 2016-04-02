@@ -6,8 +6,11 @@ using Microsoft.AspNet.Mvc;
 using ReactionRoullete.Services;
 using ReactionRoullete.Models;
 using Microsoft.Data.Entity;
+<<<<<<< HEAD
 using Microsoft.ProjectOxford.Emotion;
 using Microsoft.ProjectOxford.Emotion.Contract;
+=======
+>>>>>>> master
 using Microsoft.AspNet.Http;
 
 namespace ReactionRoullete.Controllers
@@ -64,27 +67,23 @@ namespace ReactionRoullete.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> React(long youtubeVideoDescriptionID, string url)
+        public async Task<IActionResult> React(long youtubeVideoDescriptionID, IFormFile recordedVideo)
         {
             var videoDescription = await db.YoutubeVideoDescriptions.FirstOrDefaultAsync(x => x.ID == youtubeVideoDescriptionID);
 
-            //Send request off to api here, get the operation header from congitive services and pass it to the results page
 
-            //Operation-Header
-            //  Client side should use this URL to query video operation status/ result.
-            //Example: https://api.projectoxford.ai/emotion/v1.0/operations/EF217D0C-9085-45D7-AAE0-2B36471B89B5 
+            //Save recordedVideo to Azure
 
+            //Get Url from Azure
 
+            //Pass url to cognitive
 
+            string url = "http://reactionroullete.azurewebsites.net/testData/WIN_20160402_00_37_01_Pro.mp4";
 
             VideoEmotionRecognitionOperation recognizeResult = null;
 
             
                 recognizeResult = await emotionService.RecognizeInVideoAsync(url);
-
-            
-
-
 
             return RedirectToAction("Results", "Default", new { operationUrl = recognizeResult.Url });
         }

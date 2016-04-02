@@ -3,7 +3,11 @@
   "frameworks": {
     "dnx451": {
       "bin": {
+<<<<<<< HEAD
         "assembly": "../../src/ReactionRoullete/Microsoft.ProjectOxford.Common.dll"
+=======
+        "assembly": "../../lib/dnx451/Microsoft.ProjectOxford.Common.dll"
+>>>>>>> master
       }
     }
   }

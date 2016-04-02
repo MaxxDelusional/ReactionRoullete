@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ReactionRoullete.Models;
 using ReactionRoullete.Services;
-using Microsoft.ProjectOxford.Emotion;
+
 
 namespace ReactionRoullete
 {
@@ -63,7 +63,11 @@ namespace ReactionRoullete
 
             services.AddTransient<EmotionServiceClient>((serviceProvider) =>
             {
+<<<<<<< HEAD
                 return new EmotionServiceClient("a728c60e913a44aeb33b659cb91e057e");
+=======
+                return new EmotionServiceClient("1c5aa91137ed4ab78508edef697ce194");
+>>>>>>> master
 
             });
         }
