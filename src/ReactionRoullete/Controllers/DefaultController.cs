@@ -6,7 +6,7 @@ using Microsoft.AspNet.Mvc;
 
 namespace ReactionRoullete.Controllers
 {
-    public class HomeController : Controller
+    public class DefaultController : Controller
     {
         public IActionResult Index()
         {
