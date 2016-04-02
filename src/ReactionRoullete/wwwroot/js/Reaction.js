@@ -1,41 +1,5 @@
 ﻿//Inspiration: https://github.com/muaz-khan/RecordRTC/blob/master/RecordRTC-to-ASPNETMVC/RecordRTC_to_ASPNETMVC/Views/RecordRTC/Index.cshtml
 
-//$(function () {
-
-//    var reactbutton = $("#React");
-//    var stopbutton = $("#Stop");
-//    var preview = $("#preview");
-//    var recorder;
-
-//    stopbutton.attr('disabled', true);
-
-//    reactbutton.click(function () {
-//        reactbutton.attr('disabled', true);
-        
-
-//        navigator.getUserMedia({ audio: false, video: true }, function (stream) {
-//            preview.attr("src", window.URL.createObjectURL(stream));
-//            preview.each(function (i, e) { e.play() });
-//            recorder = RecordRTC(stream, { type: "video" });
-//            recorder.startRecording();
-
-//            stopbutton.attr('disabled', false);
-//        }, function (error) {
-//            alert(JSON.stringify(error, null, '    '));
-//            stopbutton.attr('disabled', false);
-//        });
-//    });
-
-//    stopbutton.click(function () {
-//        stopbutton.attr('disabled', true);
-
-//        recorder.stopRecording();
-//        var blob = recorder.getBlob();
-
-//        reactbutton.attr('disabled', false);
-//    })
-//});
-
 // PostBlob method uses XHR2 and FormData to submit 
 // recorded blob to the PHP server
 function PostBlob(blob, fileType, fileName) {
