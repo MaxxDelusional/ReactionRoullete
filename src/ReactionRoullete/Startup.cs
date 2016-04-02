@@ -63,7 +63,7 @@ namespace ReactionRoullete
 
             services.AddTransient<EmotionServiceClient>((serviceProvider) =>
             {
-                return new EmotionServiceClient("ac2feba2587948878912ff54871123d8");
+                return new EmotionServiceClient("a728c60e913a44aeb33b659cb91e057e");
 
             });
         }

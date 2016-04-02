@@ -8,6 +8,7 @@ using ReactionRoullete.Models;
 using Microsoft.Data.Entity;
 using Microsoft.ProjectOxford.Emotion;
 using Microsoft.ProjectOxford.Emotion.Contract;
+using Microsoft.AspNet.Http;
 
 namespace ReactionRoullete.Controllers
 {
@@ -17,7 +18,10 @@ namespace ReactionRoullete.Controllers
         private readonly ApplicationDbContext db;
         private readonly EmotionServiceClient emotionService;
 
-
+        public IActionResult TestVideoUpload(IFormFile file)
+        {
+            return Content("Hello World");
+        }
         public DefaultController(YoutubeService youtubeService, ApplicationDbContext db, EmotionServiceClient emotionService)
         {
             this.youtubeService = youtubeService;
@@ -75,15 +79,8 @@ namespace ReactionRoullete.Controllers
 
             VideoEmotionRecognitionOperation recognizeResult = null;
 
-
-            try
-            {
+            
                 recognizeResult = await emotionService.RecognizeInVideoAsync(url);
-            }
-            catch (Exception ex)
-            {
-
-            }
 
             
 
